@@ -52,9 +52,9 @@ class detectorObjetos:
         if firstFrame:
             alto,ancho ,profundo = self.img.shape
             limit = ancho
-            for i in xrange(ancho-1,0,-1):
+            for i in range(ancho-1,0,-1):
                 auxFlag = True
-                for j in xrange(alto-1,0,-1):
+                for j in range(alto-1,0,-1):
                     if mask[j][i] == 255:
                         #print("Ya")
                         auxFlag = False

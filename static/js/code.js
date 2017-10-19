@@ -1,17 +1,35 @@
-nodos = 7;
-camino = [0, 6, 8, 7, 3, 1, 2, 5, 4];
-ady = [[0, 3.61, 7.21, 3, 4.47, 4.24, 4.47], [3.61, 0, 6.380977613272764, 3.997003984913176, 5.546819396892034, 5.80238127553172, 6.390322949509599], [7.21, 6.380977613272764, 0, 6.577677499089561, 7.5060120031856385, 8.008033009905796, 8.743590116131454], [3, 3.997003984913176, 6.577677499089561, 0, 4.114373808871548, 4.222274001020345, 4.7846512306011055], [4.47, 5.546819396892034, 7.5060120031856385, 4.114373808871548, 0, 4.464674238727974, 4.899422796339998], [4.24, 5.80238127553172, 8.008033009905796, 4.222274001020345, 4.464674238727974, 0, 4.47641324504131], [4.47, 6.390322949509599, 8.743590116131454, 4.7846512306011055, 4.899422796339998, 4.47641324504131, 0]]
+//{% import imp; imp.load_source("medidorDistancia","C:\Cilix\cilixvenv\CilixBrain\cube_locator\medidorDistancia6") %};
+
+
+g = [[7.931468531468531, 23.671875], [22.462609890109892, 18.253012048192772], [33.2706447963801, 15.947368421052628], [48.02076923076923, 31.5625], [71.41908080451658, 26.578947368421108], [88.63552884615379, 14.708737864077653], [103.57253752345198, 21.04166666666669], [127.77427572427551, 15.78125]]
+nodos = g.length + 1
+ruta = [0, 7, 6, 5, 4, 3, 2, 1, 8]
 nod = []
-for (i = 0; i < nodos; i++) { 
-    tmp = {"id": i};
-	data ={"data": tmp};//, "position":{ "x": i*50, "y": i*50}};
+nod.push({"data": {"id": 0}, "position": {"x": 0, "y": 0}});
+
+//var out = {% medidorDistancia.prueba() %};
+//console.log(out);
+
+for (i = 0; i < nodos - 1; i++) { 
+    tmp = {"id": i+1};
+	if(g[i][0] <= 90)
+	{
+		x = g[i][1]*Math.cos(g[i][0]*Math.PI/180);
+		y = g[i][1]*Math.sin(g[i][0]*Math.PI/180);
+	}
+	else
+	{
+		x = - g[i][1]*Math.cos(Math.PI- g[i][0]*Math.PI/180);
+		y = g[i][1]*Math.sin(Math.PI - g[i][0]*Math.PI/180);
+	}		
+	data ={"data": tmp, "position":{ "x": x*100, "y": - y*100}};
 	nod.push(data);
 }
 //{ data: { id: 'ab', weight: 2, source: 'a', target: 'b' }
 edg = []
 for (i = 0; i < nodos; i++) {
 	for (j = i + 1; j < nodos; j++) {
-		tmp = {"id": String(i) + String(j), "weight": ady[i][j], "source": i, "target": j };
+		tmp = {"id": String(i) + String(j), "source": i, "target": j };//"weight": ady[i][j], "source": i, "target": j };
 		dic = {"data": tmp};
 		edg.push(dic);
 	}
@@ -33,7 +51,7 @@ var cy = cytoscape({
     .selector('edge')
       .css({
         'curve-style': 'bezier',
-        'target-arrow-shape': 'triangle', //sin flecha 
+        'target-arrow-shape': 'none', //sin flecha (triangle) 
         'width': 4,
         'line-color': '#ddd',
         'target-arrow-color': '#ddd'
@@ -51,28 +69,43 @@ var cy = cytoscape({
       nodes: nod,
 
       edges: edg
-    }/*,
+    },
 
   layout: {
-    name: 'breadthfirst',
+    name: 'preset',
     directed: true, //no dirigido
     roots: '#0',
     padding: 10
-  }*/
+  }
 });
 
-//argumentos: raiz, fx visita, direccion segun target.
-var bfs = cy.elements().bfs('#0', function(){}, true); 
+//argumentos: raiz, fx visita, direccion segun target. 
+bfs = []
+for(i = 0; i < 6; i++)
+{
+	bfs.push(cy.elements().bfs('#' + String(i), function(){}, true));
+}
+
+//var bfs = cy.elements().bfs('#0', function(){}, true); 
+//bfs.found.addClass('highlighted');
+//ruta = [0, 4, 5, 3, 6, 1, 2]
+
+bfs[0].path[0].addClass('highlighted');
 
 var i = 0;
-/*var highlightNextEle = function(){
-  if( i < bfs.path.length ){
-    bfs.path[i].addClass('highlighted');
-
-    i++;
-    setTimeout(highlightNextEle, 1000);
+var highlightNextEle = function(){
+  if(i < ruta.length)
+  {
+	cy.$('#' + String(ruta[i])).addClass('highlighted');
+	setTimeout(highlightNextEle, 1500);
   }
-};*/
-
-// kick off first highlight
+  
+  if(i < ruta.length - 1)
+  {
+	cy.$('#' + String(ruta[i]) + String(ruta[i+1])).addClass('highlighted');
+	cy.$('#' + String(ruta[i + 1]) + String(ruta[i])).addClass('highlighted');
+	//setTimeout(highlightNextEle, 5000);
+  }
+  i++;
+};
 highlightNextEle();
