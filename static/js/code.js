@@ -1,12 +1,14 @@
 //{% import imp; imp.load_source("medidorDistancia","C:\Cilix\cilixvenv\CilixBrain\cube_locator\medidorDistancia6") %};
 
 // Importar el vector de angulos y distancias
-var script_tag = document.getElementById('grafo');
-var angs_dists = script_tag.getAttribute("data-cubes"); // Lista con angulos y distancias [ [angulo,distancia],[ang,dist], ...]
-
-g = [[7.931468531468531, 23.671875], [22.462609890109892, 18.253012048192772], [33.2706447963801, 15.947368421052628], [48.02076923076923, 31.5625], [71.41908080451658, 26.578947368421108], [88.63552884615379, 14.708737864077653], [103.57253752345198, 21.04166666666669], [127.77427572427551, 15.78125]]
+var gr = document.getElementById('grafo');
+var array = gr.getAttribute("data-cubes"); // Lista con angulos y distancias [ [angulo,distancia],[ang,dist], ...]
+var rutaS = gr.getAttribute("data-ruta");
+var g = JSON.parse(array);
+var ruta = JSON.parse(rutaS);
+//g = [[7.931468531468531, 23.671875], [22.462609890109892, 18.253012048192772], [33.2706447963801, 15.947368421052628], [48.02076923076923, 31.5625], [71.41908080451658, 26.578947368421108], [88.63552884615379, 14.708737864077653], [103.57253752345198, 21.04166666666669], [127.77427572427551, 15.78125]]
 nodos = g.length + 1
-ruta = [0, 7, 6, 5, 4, 3, 2, 1, 8]
+//ruta = [0, 7, 6, 5, 4, 3, 2, 1, 8]
 nod = []
 nod.push({"data": {"id": 0}, "position": {"x": 0, "y": 0}});
 
@@ -55,7 +57,7 @@ var cy = cytoscape({
       .css({
         'curve-style': 'bezier',
         'target-arrow-shape': 'none', //sin flecha (triangle) 
-        'width': 4,
+        'width': 6,
         'line-color': '#ddd',
         'target-arrow-color': '#ddd'
       })
@@ -93,7 +95,7 @@ for(i = 0; i < 6; i++)
 //bfs.found.addClass('highlighted');
 //ruta = [0, 4, 5, 3, 6, 1, 2]
 
-bfs[0].path[0].addClass('highlighted');
+cy.$('#0').css("background-color", "red");
 
 var i = 0;
 var highlightNextEle = function(){
