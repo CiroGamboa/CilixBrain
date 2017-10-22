@@ -2,11 +2,21 @@ import numpy as np
 import cv2
 import math
 import sys
+import time
 
 class detectorObjetos:
 
-    def __init__(self,img):
+    def __init__(self,img,thickWindowDetect):
         self.img = img
+        self.shape = img.shape #[alto,ancho,profundo]
+        self.completeMask = None # Para poder devolver la mascara completa del primer frame
+        # Se toma el tiempo en que se hace el procesamiento, para nombrar
+        # a los archivos de salida
+        self.timestr = time.strftime("%Y%m%d-%H%M%S")
+        self.thickWindowDetect = thickWindowDetect
+
+    def get_common_time(self):
+        return self.timestr
 
     def segmentar_por_color(self,limL1,limU1,limL2,limU2,firstFrame):
 
@@ -29,9 +39,12 @@ class detectorObjetos:
             lower_green = np.array([70,255,255])
         '''
 
+
+        
         # Conversion de la imagen de entrada de RGB a HSV
         img_hsv = cv2.cvtColor(self.img, cv2.COLOR_BGR2HSV)
         #cv2.imshow('hsv',img_hsv)
+
 
         #La idea de las dos mascaras fue tomada de aqui:
         # https://stackoverflow.com/questions/32522989/opencv-better-detection-of-red-color
@@ -40,7 +53,7 @@ class detectorObjetos:
         mask2 = cv2.inRange(img_hsv, limL2, limU2)
 
         mask = mask1|mask2
-
+        
         
 
         # Ignorar las fichas que quedaron no salieron completas a la izquierda
@@ -50,7 +63,20 @@ class detectorObjetos:
         
 
         if firstFrame:
-            alto,ancho ,profundo = self.img.shape
+
+            # Se guarda la mascara completa para ser usada mas adelante
+            self.completeMask = mask.copy()
+            
+            # Se guarda el primer frame original
+            cv2.imwrite("images/detection/originalFrame"+self.timestr+".jpg",self.img)
+
+            # Se guarda el primer frame en hsv
+            cv2.imwrite("images/detection/hsvFrame"+self.timestr+".jpg",img_hsv)
+
+            # Se guarda la mascara del primer frame
+            cv2.imwrite("images/detection/maskFrame"+self.timestr+".jpg",mask)
+          
+            alto,ancho,profundo = self.shape
             limit = ancho
             for i in range(ancho-1,0,-1):
                 auxFlag = True
@@ -112,7 +138,22 @@ class detectorObjetos:
         #cv2.waitKey(0)
         #cv2.destroyAllWindows()
 
-        return rectCubos
+        # Si es el primer frame, se agrega windowDetect para efectos de visualizacion
+        if firstFrame:
+            anchoImg = self.shape[1]
+            altoImg = self.shape[0]
+            imgOut = self.img.copy()
+            for i in range(anchoImg-self.thickWindowDetect,anchoImg):
+                for j in range(0,altoImg):
+                    imgOut[j][i][:] = self.completeMask[j][i]
+                    
+            #imgOut[anchoImg-self.thickWindowCube:,:,:] = self.completeMask[anchoImg-self.thickWindowCube:,:]
+            #cv2.imshow('maskOriginal',imgOut)
+            #cv2.waitKey(0)
+            #cv2.destroyAllWindows()
+            return [rectCubos,imgOut]
+        else:        
+            return [rectCubos,None]
 
     @staticmethod
     def detectar_cubo_referencia(imgRef):

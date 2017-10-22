@@ -1,7 +1,8 @@
 
 import cv2
 import sys
-from cube_locator.detectorObjetos6 import *
+from cube_locator.detectorObjetos8 import * #cube_locator.
+import time
 
 class medidorDistancia:
     def __init__(self,pixError,rotationDir,thickWindowCube, thickWindowDetect,umbralIn,umbralOut,distRef):
@@ -45,7 +46,13 @@ class medidorDistancia:
         #######VECTOR DE SALIDA CON LA SIGUIENTE ESTRUCTURA [ [ang,dist], [ang,dist] ...]
         ###### CADA PAR [ANG,DIST] CORRESPONDE A UN CUBO
         self.angs_dists = []
-           
+
+        ## Video de salida poniendole al video original los cuadros del traking
+        self.videoOut = None
+
+        # Imagen artistica que representa los pasos del procesamiento
+        self.imgOut = None
+        
     @staticmethod
     def get_dist_ref(imgRef):
         # Variables para determinar la distancia a los cubos
@@ -131,8 +138,8 @@ class medidorDistancia:
                                             np.array([170,70,50]),
                                             np.array([180,255,255]),
                                             False)
-        cv2.imshow("Mask entrada",mask)
-        print("Pixeles de cubo nuevo:"+str(cv2.countNonZero(mask)))
+        #cv2.imshow("Mask entrada",mask)
+        #print("Pixeles de cubo nuevo:"+str(cv2.countNonZero(mask)))
         if cv2.countNonZero(mask) > self.umbralIn:
             # Hay un cubo entrando
             return True
@@ -192,7 +199,11 @@ class medidorDistancia:
         
         # Determinar los cuadros de area minima que incluyen a las fichas
         detector.img = frame
-        boxes = detector.detectar_cubos(self.pixError,firstFrame)
+
+        #if firstFrame:
+         #   boxes,self.imgOut = detector.detectar_cubos(self.pixError,firstFrame)
+        #else:
+        boxes,self.imgOut = detector.detectar_cubos(self.pixError,firstFrame)
 
         # Se parametrizan las coordenadas para que coincidan con la entrada del tracker
         # y se crea un cuadrado de tracking por cada ficha detectada
@@ -232,7 +243,7 @@ class medidorDistancia:
                             # Esta en Y
                             if punta[1]>=oldBoxList[1] and punta[1]<=oldBoxList[1]+oldBoxList[3]:
                                 overlap=True
-                                print("\nOVERLAP!\n")
+                                #print("\nOVERLAP!\n")
                                                            
             if not(overlap):
                 #minX y minY son el origen del cuadrado
@@ -289,6 +300,29 @@ class medidorDistancia:
         altoImg,anchoImg,profundoImg = frame.shape
         #cv2.imshow("original", frame)
 
+         # Find OpenCV version
+        (major_ver, minor_ver, subminor_ver) = (cv2.__version__).split('.')
+     
+        # With webcam get(CV_CAP_PROP_FPS) does not work.     
+        if int(major_ver)  < 3 :
+            fpsVideo = video.get(cv2.cv.CV_CAP_PROP_FPS)
+            #print "Frames per second using video.get(cv2.cv.CV_CAP_PROP_FPS): {0}".format(fpsVideo)
+        else :
+            fpsVideo = video.get(cv2.CAP_PROP_FPS)
+            #print "Frames per second using video.get(cv2.CAP_PROP_FPS) : {0}".format(fpsVideo)
+     
+        # Usar una instancia de detectorObjetos, para determinar los cubos
+        # en el primer frame
+        detector = detectorObjetos(frame,self.thickWindowDetect)
+
+        # Se crea el video de salida
+        # timestr = time.strftime("%Y%m%d-%H%M")
+        timestr = detector.get_common_time()
+        self.videoOut = cv2.VideoWriter(filename="videos/detection/cubeTracking"+timestr+".avi",
+                                        fourcc=cv2.VideoWriter_fourcc('M','J', 'P', 'G'),
+                                        fps=fpsVideo,
+                                        frameSize=(anchoImg,altoImg))
+
         # Setear el ancho global del video con fines de medicion de distancia
         self.width = anchoImg
 
@@ -298,9 +332,8 @@ class medidorDistancia:
         #cv2.imshow("cortado", frame)
         #cv2.waitKey(0)
 
-        # Usar una instancia de detectorObjetos, para determinar los cubos
-        # en el primer frame
-        detector = detectorObjetos(frame)
+
+        #detector = detectorObjetos(frame)
         firstFrame = True
         # Obtener los parametros del primer frame para hacer tracking 
         detectedCubes = self.get_trackers(frame,None,detector,False,altoImg,anchoImg,None,firstFrame)
@@ -312,6 +345,7 @@ class medidorDistancia:
 
         firstFrame = False
         auxFlag = False
+        firstFrameAux = True # Esta bandera es para escribir la imagen de salida del primer frame
 
         while True:
             # Leer un nuevo frame
@@ -326,7 +360,7 @@ class medidorDistancia:
                 for (distVec,angVec) in zip(dists,angs):
                     self.distancias.append(distVec)
                     self.angulos.append(angVec)
-                print("\nSe acabo el video")
+                #print("\nSe acabo el video")
                 break
             
             ###### ESTO ES SOLO PARA VIDEOS MUY GRANDES, SE ELIMINARA
@@ -334,7 +368,7 @@ class medidorDistancia:
             frameOrg = frame.copy()
             #auxFlag = False ####TROUBLE
 
-            print("Numero de cubos en tracking = "+str(len(bbox)))
+            #print("Numero de cubos en tracking = "+str(len(bbox)))
             
             for idx,box in enumerate(bbox):
                 checkers[idx] = check
@@ -353,7 +387,7 @@ class medidorDistancia:
                     # Se evalua si la ventana horizontal esta cerca de los bordes verticales
                     if self.rotationDir == 'right':
                         if box[0] < self.umbralOut:
-                            print("\nSALIO UN CUBO DEL TRACKING\n")
+                            #print("\nSALIO UN CUBO DEL TRACKING\n")
                             self.distancias.append(dists[idx])
                             self.angulos.append(angs[idx])
                             trackers.remove(trackers[idx])
@@ -376,7 +410,9 @@ class medidorDistancia:
                             #print("ok")
                             p1 = (int(box[0]), int(box[1]))
                             p2 = (int(box[0] + box[2]), int(box[1] + box[3]))
-                            cv2.rectangle(frame, p1, p2, (0,255,0))
+                            cv2.rectangle(frame, p1, p2, (0,255,0),5)
+                            if firstFrameAux:
+                                cv2.rectangle(self.imgOut, p1, p2, (0,255,0),5)
 
                     elif self.rotationDir == 'left':
                         # Se escoje otra coordenada de box y se compara
@@ -392,16 +428,16 @@ class medidorDistancia:
 
             # Detectar nuevas fichas entrantes
             cuboEntrando = self.detectar_cubo_entrante(frame,detector,altoImg,anchoImg)
-            if cuboEntrando:
-                print("Hay cubos entrando\n")
+            #if cuboEntrando:
+                #print("Hay cubos entrando\n")
             #else:
             if not cuboEntrando:
                 if auxFlag:
                     # Ya se puede detectar el nuevo cubo
-                    print("\nLISTO PARA DETECTAR\n")
+                    #print("\nLISTO PARA DETECTAR\n")
                     windowCube = self.get_window_cube(frameOrg)
-                    cv2.imshow("Franja detectora de nuevas fichas",windowCube)
-                    cv2.waitKey(0)
+                    #cv2.imshow("Franja detectora de nuevas fichas",windowCube)
+                    #cv2.waitKey(0)
                     
                     newCubes = self.get_trackers(windowCube,frameOrg,detector,True,altoImg,anchoImg,bbox,firstFrame)
                     for (box,tracker,checker,dist,ang) in zip(newCubes[0],newCubes[1],newCubes[2],newCubes[3],newCubes[4]):
@@ -412,19 +448,42 @@ class medidorDistancia:
                         dists.append(dist)
                         angs.append(ang)
                            
-                else:
-                    print("No hay cubos entrando\n")
+                #else:
+                 #   print("No hay cubos entrando\n")
                 
             auxFlag = cuboEntrando
 
             # Actualizar el angulo de la camara
             self.alpha = self.alpha + self.alphaStep
                 
-        
-            cv2.imshow("Tracking", frame)
-            cv2.waitKey(0)
+            # Se guarda frame por frame el video de salida
+            self.videoOut.write(frame)
+            #print("Frame shape")
+            #print(frame.shape)
+            #cv2.imshow("Tracking", frame)
+            #cv2.waitKey(0)
 
-        cv2.destroyAllWindows()
+            if firstFrameAux:
+
+
+                # Con esto se agrega a la imagen una representacion de WindowCube
+                wcubeX = anchoImg-self.thickWindowCube
+                p1_out = (wcubeX,5)
+                p2_out = (anchoImg+5,altoImg-5)
+                cv2.rectangle(self.imgOut, p1_out, p2_out, (255,0,0),5)
+                #cv2.rectangle(firstFrameTrack, p1_out, p2_out, (255,0,0),5)
+              
+                #cv2.imshow("FirstFrame", self.imgOut)
+                #cv2.waitKey(0)
+                #cv2.destroyAllWindows()
+
+                # Escribir la imagen de salida
+                cv2.imwrite("images/detection/detectionFrame"+timestr+".jpg",self.imgOut)
+                firstFrameAux = False
+
+        # Se termina la grabacion del video
+        self.videoOut.release()
+        #cv2.destroyAllWindows()
         print("Se detectaron "+str(len(self.distancias))+" cubos, si,"+str(len(self.angulos)))
 
 
@@ -435,34 +494,34 @@ class medidorDistancia:
         
 ##############################################################################
 ######PRUEBAS
-##video = cv2.VideoCapture("videos/mul_red_cubes_1.MOV")
-##imgRef = cv2.imread('images/cubo_rojo_15cm.jpg')
-##
-### Igualar el size de la imgref al del video
-##imgRef = cv2.resize(imgRef, (800,448), interpolation = cv2.INTER_AREA)
-###cv2.imshow("ImgRef", imgRef)
-###cv2.waitKey(0)
-###video = cv2.VideoCapture("videos/red_cube2.MOV")
-###video = cv2.VideoCapture("videos/red_cube1.MOV")
-##
-##pixError = 20
-##rotationDir = 'right'
-##thickWindowCube = 200
-##thickWindowDetect = 10
-##umbralIn = 20
-##umbralOut = 5
-##
-### Hallar los datos de distancia de la imagen de referencia (metodo estatico)
-##rectRef = medidorDistancia.get_dist_ref(imgRef)
-##
-##
-##med = medidorDistancia(pixError,rotationDir,thickWindowCube,
-##                       thickWindowDetect,umbralIn,umbralOut,
-##                       rectRef)
-##med.track_cubos(video)
-##
-### Adquirir vector de salida con los angulos y distancias de cada cubo
-##angs_dists = med.get_angs_dists()
+video = cv2.VideoCapture("videos/mul_red_cubes_1.MOV")
+imgRef = cv2.imread('images/cubo_rojo_15cm.jpg')
+
+# Igualar el size de la imgref al del video
+imgRef = cv2.resize(imgRef, (800,448), interpolation = cv2.INTER_AREA)
+#cv2.imshow("ImgRef", imgRef)
+#cv2.waitKey(0)
+#video = cv2.VideoCapture("videos/red_cube2.MOV")
+#video = cv2.VideoCapture("videos/red_cube1.MOV")
+
+pixError = 20
+rotationDir = 'right'
+thickWindowCube = 200
+thickWindowDetect = 10
+umbralIn = 20
+umbralOut = 5
+
+# Hallar los datos de distancia de la imagen de referencia (metodo estatico)
+rectRef = medidorDistancia.get_dist_ref(imgRef)
+
+
+med = medidorDistancia(pixError,rotationDir,thickWindowCube,
+                       thickWindowDetect,umbralIn,umbralOut,
+                       rectRef)
+med.track_cubos(video)
+
+# Adquirir vector de salida con los angulos y distancias de cada cubo
+angs_dists = med.get_angs_dists()
 
 
 
