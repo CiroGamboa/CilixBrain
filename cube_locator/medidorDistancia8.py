@@ -1,7 +1,8 @@
 
 import cv2
 import sys
-from cube_locator.detectorObjetos8 import * #cube_locator.
+#from cube_locator.detectorObjetos8 import * #cube_locator.
+from detectorObjetos8 import * #cube_locator.
 import time
 
 class medidorDistancia:
@@ -511,7 +512,7 @@ thickWindowDetect = 10
 umbralIn = 20
 umbralOut = 5
 
-# Hallar los datos de distancia de la imagen de referencia (metodo estatico)
+#Hallar los datos de distancia de la imagen de referencia (metodo estatico)
 rectRef = medidorDistancia.get_dist_ref(imgRef)
 
 
@@ -520,11 +521,8 @@ med = medidorDistancia(pixError,rotationDir,thickWindowCube,
                        rectRef)
 med.track_cubos(video)
 
-# Adquirir vector de salida con los angulos y distancias de cada cubo
+#Adquirir vector de salida con los angulos y distancias de cada cubo
 angs_dists = med.get_angs_dists()
-
-
-
         
 
         

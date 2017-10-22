@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.http import HttpResponse
-from cube_locator.medidorDistancia6 import medidorDistancia
+from cube_locator.medidorDistancia8 import medidorDistancia
 from christofides.COMPLETOV1 import rutaRecoleccion
 #from medidorDistancia6 import medidorDistancia
 import cv2
