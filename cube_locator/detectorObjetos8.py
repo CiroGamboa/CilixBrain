@@ -68,13 +68,13 @@ class detectorObjetos:
             self.completeMask = mask.copy()
             
             # Se guarda el primer frame original
-            cv2.imwrite("images/detection/originalFrame"+self.timestr+".jpg",self.img)
+            cv2.imwrite("C:/Cilix/cilixvenv/CilixBrain/cube_locator/images/detection/originalFrame"+self.timestr+".jpg",self.img)
 
             # Se guarda el primer frame en hsv
-            cv2.imwrite("images/detection/hsvFrame"+self.timestr+".jpg",img_hsv)
+            cv2.imwrite("C:/Cilix/cilixvenv/CilixBrain/cube_locator/images/detection/hsvFrame"+self.timestr+".jpg",img_hsv)
 
             # Se guarda la mascara del primer frame
-            cv2.imwrite("images/detection/maskFrame"+self.timestr+".jpg",mask)
+            cv2.imwrite("C:/Cilix/cilixvenv/CilixBrain/cube_locator/images/detection/maskFrame"+self.timestr+".jpg",mask)
           
             alto,ancho,profundo = self.shape
             limit = ancho

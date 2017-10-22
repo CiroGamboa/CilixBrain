@@ -1,8 +1,8 @@
 
 import cv2
 import sys
-#from cube_locator.detectorObjetos8 import * #cube_locator.
-from detectorObjetos8 import * #cube_locator.
+from cube_locator.detectorObjetos8 import * #cube_locator.
+#from detectorObjetos8 import * #cube_locator.
 import time
 
 class medidorDistancia:
@@ -319,7 +319,7 @@ class medidorDistancia:
         # Se crea el video de salida
         # timestr = time.strftime("%Y%m%d-%H%M")
         timestr = detector.get_common_time()
-        self.videoOut = cv2.VideoWriter(filename="videos/detection/cubeTracking"+timestr+".avi",
+        self.videoOut = cv2.VideoWriter(filename="C:/Cilix/cilixvenv/CilixBrain/cube_locator/videos/detection/cubeTracking"+timestr+".avi",
                                         fourcc=cv2.VideoWriter_fourcc('M','J', 'P', 'G'),
                                         fps=fpsVideo,
                                         frameSize=(anchoImg,altoImg))
@@ -459,6 +459,7 @@ class medidorDistancia:
                 
             # Se guarda frame por frame el video de salida
             self.videoOut.write(frame)
+            print(".")
             #print("Frame shape")
             #print(frame.shape)
             #cv2.imshow("Tracking", frame)
@@ -466,25 +467,23 @@ class medidorDistancia:
 
             if firstFrameAux:
 
-
                 # Con esto se agrega a la imagen una representacion de WindowCube
                 wcubeX = anchoImg-self.thickWindowCube
                 p1_out = (wcubeX,5)
                 p2_out = (anchoImg+5,altoImg-5)
                 cv2.rectangle(self.imgOut, p1_out, p2_out, (255,0,0),5)
-                #cv2.rectangle(firstFrameTrack, p1_out, p2_out, (255,0,0),5)
               
                 #cv2.imshow("FirstFrame", self.imgOut)
                 #cv2.waitKey(0)
                 #cv2.destroyAllWindows()
 
                 # Escribir la imagen de salida
-                cv2.imwrite("images/detection/detectionFrame"+timestr+".jpg",self.imgOut)
+                cv2.imwrite("C:/Cilix/cilixvenv/CilixBrain/cube_locator/images/detection/detectionFrame"+timestr+".jpg",self.imgOut)
                 firstFrameAux = False
 
         # Se termina la grabacion del video
         self.videoOut.release()
-        #cv2.destroyAllWindows()
+        cv2.destroyAllWindows()
         print("Se detectaron "+str(len(self.distancias))+" cubos, si,"+str(len(self.angulos)))
 
 
@@ -495,35 +494,37 @@ class medidorDistancia:
         
 ##############################################################################
 ######PRUEBAS
-video = cv2.VideoCapture("videos/mul_red_cubes_1.MOV")
-imgRef = cv2.imread('images/cubo_rojo_15cm.jpg')
-
-# Igualar el size de la imgref al del video
-imgRef = cv2.resize(imgRef, (800,448), interpolation = cv2.INTER_AREA)
-#cv2.imshow("ImgRef", imgRef)
-#cv2.waitKey(0)
-#video = cv2.VideoCapture("videos/red_cube2.MOV")
-#video = cv2.VideoCapture("videos/red_cube1.MOV")
-
-pixError = 20
-rotationDir = 'right'
-thickWindowCube = 200
-thickWindowDetect = 10
-umbralIn = 20
-umbralOut = 5
-
-#Hallar los datos de distancia de la imagen de referencia (metodo estatico)
-rectRef = medidorDistancia.get_dist_ref(imgRef)
-
-
-med = medidorDistancia(pixError,rotationDir,thickWindowCube,
-                       thickWindowDetect,umbralIn,umbralOut,
-                       rectRef)
-med.track_cubos(video)
-
-#Adquirir vector de salida con los angulos y distancias de cada cubo
-angs_dists = med.get_angs_dists()
-        
+##video = cv2.VideoCapture("videos/mul_red_cubes_1.MOV")
+##imgRef = cv2.imread('images/cubo_rojo_15cm.jpg')
+##
+##cv2.imshow("ImgRef", imgRef)
+##cv2.waitKey(0)
+### Igualar el size de la imgref al del video
+##imgRef = cv2.resize(imgRef, (800,448), interpolation = cv2.INTER_AREA)
+##cv2.imshow("ImgRef", imgRef)
+##cv2.waitKey(0)
+###video = cv2.VideoCapture("videos/red_cube2.MOV")
+###video = cv2.VideoCapture("videos/red_cube1.MOV")
+##
+##pixError = 20
+##rotationDir = 'right'
+##thickWindowCube = 200
+##thickWindowDetect = 10
+##umbralIn = 20
+##umbralOut = 5
+##
+###Hallar los datos de distancia de la imagen de referencia (metodo estatico)
+##rectRef = medidorDistancia.get_dist_ref(imgRef)
+##
+##
+##med = medidorDistancia(pixError,rotationDir,thickWindowCube,
+##                       thickWindowDetect,umbralIn,umbralOut,
+##                       rectRef)
+##med.track_cubos(video)
+##
+###Adquirir vector de salida con los angulos y distancias de cada cubo
+##angs_dists = med.get_angs_dists()
+##        
 
         
         
