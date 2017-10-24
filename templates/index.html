@@ -1,22 +1,150 @@
 <!DOCTYPE html>
 {% load staticfiles %}
-<!-- This code is for demonstration purposes only.  You should not hotlink to Github, Rawgit, or files from the Cytoscape.js documentation in your production apps. -->
-<html>
-<head>
-<link href="{% static 'css/style.css' %}" rel="stylesheet" />
-<meta charset=utf-8 />
-<meta name="viewport" content="user-scalable=no, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, minimal-ui">
-<title>CilixBot</title>
-<script type="text/javascript" src="{% static 'js/cytoscape.min.js' %}"></script>
-</head>
-<body>
-<h1>My First Heading</h1>
-<div id="cy"></div>
-<!-- Load appplication code at the end to ensure DOM is loaded -->
-<!--<script type="text/python"> 
-    variable = "\"")
-</script>-->
-<input type="hidden" id="myVar" name="variable" value="{{ variable }}">
-<script id="grafo" type="text/javascript" src="{% static 'js/code.js' %}" data-cubes="{{ angs_dists }}" data-ruta ="{{ ruta }}"></script>
-</body>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CilixBot</title>
+
+    <!-- Bootstrap core CSS {% static 'css/style.css' %} -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/heroic-features.css' %}" rel="stylesheet">
+
+    <!-- Custom fonts for this template -->
+    <!-- <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'> -->
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/clean-blog.min.css' %}" rel="stylesheet"><!--Esta es la clave-->
+	
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="/index">☺</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link active js-scroll-trigger" href="#">Inicio
+			  <span class="sr-only">(current)</span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="/video">Detección	  
+			  </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="/ruta">Ruta</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link js-scroll-trigger" href="/about">Acerca de</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Header -->
+    <header class="masthead" style="background-image: url({% static '/css/marte.jpg'%}); height:50%" >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="site-heading">
+              <h1>CilixBrain</h1>
+              <span class="lead" style="font-size:170%">Determinación de ruta para aplicación en robótica móvil</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+	  
+      <!-- Page Features -->
+	  <div class="container">
+      <div class="row text-center">
+
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="{% static 'contenido/mini-3cubos.jpg' %}" alt="Imagen no disponible">
+            <div class="card-body">
+              <h4 class="card-title">Tres elementos</h4>
+            </div>
+			<div class="card-footer">
+              <a href="/video/3" id="tres" class="btn btn-primary">Probar</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="{% static 'contenido/mini-5cubos.jpg' %}" alt="Imagen no disponible">
+            <div class="card-body">
+              <h4 class="card-title">Cinco elementos</h4>
+            </div>
+            <div class="card-footer">
+              <a href="/video/5" id="cinco" class="btn btn-primary">Probar</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="{% static 'contenido/mini-6cubos.jpg' %}" alt="Imagen no disponible">
+            <div class="card-body">
+              <h4 class="card-title">Seis elementos</h4>
+              <!--<p class="card-text">Lorem.</p>-->
+            </div>
+            <div class="card-footer">
+              <a href="/video/6" id="seis" class="btn btn-primary">Probar</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-md-6 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="{% static 'contenido/mini-8cubos.jpg' %}" alt="Imagen no disponible">
+            <div class="card-body">
+              <h4 class="card-title">Ocho elementos</h4>
+              <!--<p class="card-text">Lorem.</p>-->
+            </div>
+            <div class="card-footer">
+              <a href="/video/8" id="ocho" class="btn btn-primary">Probar</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">UPB - Facultad de Ingeniería de Sistemas e Informática</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  </body>
+
 </html>

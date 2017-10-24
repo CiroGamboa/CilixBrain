@@ -1,35 +1,52 @@
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 from cube_locator.medidorDistancia8 import medidorDistancia
 from christofides.COMPLETOV1 import rutaRecoleccion
 #from medidorDistancia6 import medidorDistancia
 import cv2
 
+class JSONResponse(HttpResponse):
 
-# Se carga la imagen de referencia tan pronto se lanza
-# el servidor para ahorrar tiempo
-#imgRef = cv2.imread("images/cubo_rojo_15cm.jpg")
-imgRef = cv2.imread("C:\Cilix\cilixvenv\CilixBrain\cube_locator\images\cubo_rojo_15cm.jpg")
+        def __init__(self, data, **kwargs):
+                content = JSONRenderer().render(data)
+                kwargs['content_type'] = 'application/json'
+                super(JSONResponse, self).__init__(content, **kwargs)
 
-#cv2.imshow('img',imgRef)
-imgRef = cv2.resize(imgRef, (800,448), interpolation = cv2.INTER_AREA)
-rectRef = medidorDistancia.get_dist_ref(imgRef)
-
-def get_main(request):
-        #video = cv2.VideoCapture("videos/mul_red_cubes_1.MOV")
-        video = cv2.VideoCapture("C:/Cilix/cilixvenv/CilixBrain/cube_locator/videos/mul_red_cubes_1.MOV")
-        pixError = 20
-        rotationDir = "right"
-        thickWindowCube = 200
-        thickWindowDetect = 10
-        umbralIn = 20
-        umbralOut = 5
-        med = medidorDistancia(pixError,rotationDir,thickWindowCube,thickWindowDetect,umbralIn,umbralOut,rectRef)
-        med.track_cubos(video)
-        angs_dists = med.get_angs_dists()
-        ruta = rutaRecoleccion(angs_dists)
-        context = {'angs_dists':angs_dists, 'ruta': ruta}
+def get_index(request):
+        context = {}
         html = TemplateResponse(request, 'index.html',context)
         return HttpResponse(html.render())
+
+def get_video(request, n): #numero de elementos
+        context = {'n': n}
+        html = TemplateResponse(request, 'video.html',context)
+        return HttpResponse(html.render())
+
+def get_ruta(request, video): #ejemplo
+        array = []
+        #Para el video de 5
+        if video == "5":
+                array = [[39.185227272727275, 16.199996948242188], [61.075367647058826, 9.878046919659864], [91.6625, 25.851058959960938], [106.96614583333333, 13.965514610553598], [142.92934782608697, 25.851058959960938]]
+        #Para el de 3
+        elif video == "3":
+                array = [[49.40133714969243, 9.204543720592145], [95.22156954887225, 18.13432494206216], [124.06119702665765, 11.462261991680801]]
+
+        #AGREGAR
+
+        ruta, distancia = rutaRecoleccion(array)
+
+        context = {'vector': str(array), 'ruta': str(ruta), 'distancia': distancia, 'video': video} 
+        html = TemplateResponse(request, 'ruta.html',context)
+        return HttpResponse(html.render())
+
+def get_about(request):
+        context = {}
+        html = TemplateResponse(request, 'about.html',context)
+        return HttpResponse(html.render())
+
+
 

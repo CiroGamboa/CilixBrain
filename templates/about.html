@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CilixBot</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/heroic-features.css' %}" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="/index">☺</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/index">Inicio
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/video">Detección
+			  </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/ruta">Ruta</a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Acerca de
+			  <span class="sr-only">(current)</span></a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <!-- Jumbotron Header -->
+      <!-- <header class="jumbotron my-4"> -->
+		<div class="lead">
+			<br>
+        <!--<p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ipsa, ipsam, eligendi, in quo sunt possimus non incidunt odit vero aliquid similique quaerat nam nobis illo aspernatur vitae fugiat numquam repellat.</p>-->
+			<p>Este programa determina la ruta que debe seguir un robot de manera que pueda optimizar sus recursos.</p>
+			<p>Para encontrar la mejor ruta: </p>
+			<ol type="1">
+				<li>Se analiza el video para identificar los objetos que el robot ha visto.</li>
+				<li>Para cada objeto identificado se calcula la distancia al robot y el ángulo al cual se encuentra.</li>
+				<li>Con la lista de elementos se representa el grafo como un grafo completo.</li>
+				<li>Se ejecuta el algoritmo de Christofides que determina la ruta.</li>
+			</ol>
+			<p>Está creado para su uso en robots manipuladores móviles que ejecutan la tarea de recolección de objetos.</p>
+			<p>Inspirado en los robots de exploración espacial.</p>
+			<p>Desarrollado como proyecto integrador de Estructuras de Datos y Matemáticas Discretas II de la mano de Robótica Industrial y Visión por Computador.</p>
+			<br>
+			<p> - Alix Angarita y Ciro Gamboa</p>
+			<br>
+		</div>
+		<!--<a href="#" class="btn btn-primary btn-lg">Call to action!</a>-->
+      <!-- </header> -->
+      <!-- /.row -->
+
+    </div>
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">UPB - Facultad de Ingeniería de Sistemas e Informática</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+  </body>
+
+</html>

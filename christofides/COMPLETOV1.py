@@ -12,5 +12,5 @@ def rutaRecoleccion(g):
     #Se ejecuta el algoritmo de Christofides
     #retorna la ruta y la distancia
     ruta, distancia = Christofides(MA)
-    print(distancia)
-    return ruta
+    #print(distancia)
+    return ruta, distancia

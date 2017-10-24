@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>CilixBot</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/heroic-features.css' %}" rel="stylesheet">
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="/index">☺</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="/index">Inicio
+              </a>
+            </li>
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Detección
+			  <span class="sr-only">(current)</span>
+			  </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/ruta">Ruta</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/about">Acerca de</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+
+      <!-- Jumbotron Header -->
+      <header class="jumbotron my-4" style="background-size: 100%;">
+        <h1 class="display-3 text-center" class="text-justify">¡Video procesado!</h1>
+		<div class="lead">
+			<br>
+			<p>Se han detectado todos los objetos en el espacio de trabajo visto por el robot.</p>
+			<div class="row text-center">
+				<div class="col">
+					<video id="vid" width="480" height="640" controls>
+					  <source src="{% static 'contenido/track_3cubos.mp4' %}" type="video/mp4" alt="Ningún ejemplo seleccionado">
+					Your browser does not support the video tag.
+					</video>
+				
+					<!--<video src="css/mini-video.png" alt="" class="img-responsive" style="width:100%">-->
+				</div>
+				
+				<div class="col">
+					<div class="row text-center">
+						<div class="col mb-2">
+							<img id="origin" src="{% static 'contenido/img1-3cubos.jpg' %}" alt="Ningún ejemplo seleccionado" class="img-responsive" style="width:100%">
+						</div>
+						<div class="col mb-2">
+							<img id="hsv" src="{% static 'contenido/img2-3cubos.jpg' %}" alt="Ningún ejemplo seleccionado" class="img-responsive" style="width:100%">
+						</div>
+						<div class="w-100"></div>
+						<div class="col">
+							<img id="umbral" src="{% static 'contenido/img3-3cubos.jpg' %}" alt="Ningún ejemplo seleccionado" class="img-responsive" style="width:100%">
+						</div>
+						<div class="col">
+							<img id="track" src="{% static 'contenido/img4-3cubos.jpg' %}" alt="Ningún ejemplo seleccionado" class="img-responsive" style="width:100%">
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>			
+			<p>Para continuar haga clic en modelar para encontrar la ruta.</p>	
+		</div>
+		<div class="col-md-12 text-center"> 
+			<a href="/ruta/{{n}}" class="btn btn-primary btn-lg">Modelar</a>
+		</div>
+      </header>
+      <!-- /.row -->
+		
+    </div>
+	
+	
+    <!-- /.container -->
+
+    <!-- Footer -->
+    <footer class="py-5 bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">UPB - Facultad de Ingeniería de Sistemas e Informática</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+	  <script src="{% static 'js/content.js' %}"></script>
+    <script>getNumber({{n}});</script>
+
+  </body>
+
+</html>

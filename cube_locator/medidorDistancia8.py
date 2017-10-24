@@ -1,4 +1,3 @@
-
 import cv2
 import sys
 from cube_locator.detectorObjetos8 import * #cube_locator.

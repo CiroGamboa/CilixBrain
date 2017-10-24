@@ -1,1 +1,0 @@
-lov u nigga
