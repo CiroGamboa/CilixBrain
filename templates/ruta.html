@@ -58,17 +58,20 @@
 			<div id="cy">Panel Content
 			</div>
 		</div>
-    <div class="lead" style="float: right; margin-left:60%; margin-top:10%; " >
+    <div class="lead" style="float: right; margin-left:60%; margin-bottom:12%;" >
       <img id ="mini" class="card-img-top" src="" style="width:80%;" alt="Imagen no disponible">
       <br>
-      <p style="margin-top:10%;">La ruta calculada es {{ruta}},</p>
+      <p style="margin-top:0%;">La ruta calculada es {{ruta}},</p>
       <p>con una distancia de {{distancia}}cm.</p>
+      <p>Calculada con un error de: {{error}}%</p>
     </div>
-  
+      
+    <div class="lead" style="margin-top:10%;">
+      <!--Pasos-->
+      <p>Pasos para la determinación de la ruta:</p>
+    </div>
 	</div>
     <!-- Page Content -->
-	
-	
     <!-- /.container -->
 
     <!-- Footer -->
@@ -83,7 +86,7 @@
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 	  <script src="{% static 'js/code.js' %}"></script>
-    <script>grafo({{vector}},{{ruta}});</script>
+    <script>grafo({{vector}},{{ruta}},{{MatAdy}});</script>
     <script src="{% static 'js/content.js' %}"></script>
     <script>getInfo({{video}});</script>
 

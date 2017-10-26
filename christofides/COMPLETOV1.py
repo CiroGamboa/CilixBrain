@@ -13,4 +13,4 @@ def rutaRecoleccion(g):
     #retorna la ruta y la distancia
     ruta, distancia = Christofides(MA)
     #print(distancia)
-    return ruta, distancia
+    return ruta, distancia, MA

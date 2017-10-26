@@ -13,5 +13,5 @@ function getNumber(v)
 function getInfo(v)
 {
 	//contenido/mini-3cubos.jpg
-	document.getElementById('mini').src = '/static/contenido/mini-' + v + 'cubos.jpg';
+	document.getElementById('mini').src = '/static/contenido/top-' + v + 'cubos.jpg';
 }
